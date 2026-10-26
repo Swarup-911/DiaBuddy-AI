@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiaBuddy | Your Health Companion</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #243047;
+        }
+
+        header {
+            background: #ffffff;
+            padding: 22px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5eaf2;
+        }
+
+        .logo {
+            color: #087f8c;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        header span {
+            color: #718096;
+            font-size: 13px;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            background: linear-gradient(120deg, #087f8c, #12a89d);
+            color: white;
+            padding: 35px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+        }
+
+        .welcome h1 {
+            margin-bottom: 12px;
+            font-size: 30px;
+        }
+
+        .welcome p {
+            line-height: 1.7;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 14px;
+            border: 1px solid #e5eaf2;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            margin-bottom: 16px;
+            font-size: 17px;
+        }
+
+        .stat-label {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #087f8c;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 7px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+        }
+
+        button {
+            margin-top: 18px;
+            padding: 12px 18px;
+            background: #087f8c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #066570;
+        }
+
+        .tip {
+            background: #e8f7f4;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            line-height: 1.6;
+        }
+
+        .history {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history th, .history td {
+            padding: 13px 8px;
+            border-bottom: 1px solid #e5eaf2;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .history th {
+            color: #718096;
+        }
+
+        .empty {
+            color: #718096;
+            padding: 15px 0;
+        }
+
+        .notice {
+            font-size: 12px;
+            color: #718096;
+            line-height: 1.7;
+            margin: 20px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #718096;
+            font-size: 13px;
+        }
+
+        @media (max-width: 700px) {
+            .stats, .content {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                padding: 18px;
+            }
+
+            .welcome {
+                padding: 25px;
+            }
+
+            .welcome h1 {
+                font-size: 24px;
+            }
+
+            .history th, .history td {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">💚 DiaBuddy</div>
+    <span>Your personal health companion</span>
+</header>
+
+<main>
+
+    <section class="welcome">
+        <h1>Your health journey starts here.</h1>
+        <p>
+            Welcome to DiaBuddy! Track your glucose readings,
+            review your personal records, and explore educational
+            resources to help you understand diabetes.
+        </p>
+    </section>
+
+    <section class="stats">
+
+        <div class="card">
+            <div class="stat-label">Latest glucose reading</div>
+            <div class="stat-value" id="latest">--</div>
+            <p class="stat-label">mg/dL</p>
+        </div>
+
+        <div class="card">
+            <div class="stat-label">Readings recorded</div>
+            <div class="stat-value" id="total">0</div>
+            <p class="stat-label">Saved on this device</p>
+        </div>
+
+        <div class="card">
+            <div class="stat-label">Today's readings</div>
+            <div class="stat-value" id="today">0</div>
+            <p class="stat-label">Entries for today</p>
+        </div>
+
+    </section>
+
+    <section class="content">
+
+        <div class="card">
+            <h3>🩸 Record a glucose reading</h3>
+
+            <form id="glucoseForm">
+
+                <label for="glucose">Glucose level (mg/dL)</label>
+                <input
+                    type="number"
+                    id="glucose"
+                    min="1"
+                    max="2000"
+                    step="any"
+                    placeholder="Enter your measured reading"
+                    required
+                >
+
+                <label for="timing">When did you measure?</label>
+                <select id="timing" required>
+                    <option value="Fasting">Fasting</option>
+                    <option value="Before meal">Before meal</option>
+                    <option value="After meal">After meal</option>
+                    <option value="Bedtime">Bedtime</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label for="date">Date and time</label>
+                <input type="datetime-local" id="date" required>
+
+                <button type="submit">Save Reading</button>
+
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>🌱 Diabetes Learning Corner</h3>
+
+            <div class="tip">
+                <strong>🥗 Balanced nutrition</strong>
+                <p>Learn how balanced meals, portion sizes, and
+                consistent eating habits can support diabetes management.</p>
+            </div>
+
+            <div class="tip">
+                <strong>🚶 Physical activity</strong>
+                <p>Ask your healthcare professional what activities
+                are appropriate for your individual health needs.</p>
+            </div>
+
+            <div class="tip">
+                <strong>📊 Track your trends</strong>
+                <p>Keep a record of your readings and share relevant
+                patterns with your healthcare professional.</p>
+            </div>
+
+            <div class="tip">
+                <strong>💊 Medication safety</strong>
+                <p>Take medication as prescribed. Never change insulin
+                doses based on this prototype's information.</p>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="card">
+        <h3>📋 Glucose History</h3>
+
+        <div id="historyContainer">
+            <p class="empty">No readings recorded yet.</p>
+        </div>
+
+        <button type="button" id="clearHistory">
+            Clear History
+        </button>
+    </section>
+
+<section class="card" id="ai-chat">
+    <h3>🤖 Ask DiaBuddy AI</h3>
+    <p class="stat-label">
+        Ask general questions about glucose readings and balanced meals.
+    </p>
+
+    <div id="chatMessages" role="log" aria-live="polite"
+         style="min-height:100px; max-height:300px; overflow-y:auto;
+                padding:12px; background:#f4f7fb; border-radius:10px;">
+        <p><strong>DiaBuddy:</strong> Hi! Ask me about balanced meals
+        or help understanding glucose measurements. I'm an educational
+        assistant, not a substitute for your healthcare professional.</p>
+    </div>
+
+    <form id="aiChatForm">
+        <label for="aiQuestion">Your question</label>
+        <input
+            type="text"
+            id="aiQuestion"
+            maxlength="4000"
+            placeholder="e.g. Suggest a balanced vegetarian Indian meal"
+            required
+        >
+        <button type="submit" id="aiSendButton">Ask DiaBuddy</button>
+    </form>
+
+    <p class="notice" id="aiStatus">
+        Your question is sent to your local DiaBuddy AI running on this computer.
+    </p>
+</section>
+
+    <p class="notice">
+        <strong>Health notice:</strong> DiaBuddy is an educational
+        prototype, not a medical device or diagnostic tool. Glucose
+        targets vary by individual. This application does not interpret
+        readings as safe or unsafe, recommend insulin doses, or replace
+        professional medical advice. Seek appropriate medical assistance
+        for concerning symptoms or readings.
+        <br><br>
+        <strong>Privacy:</strong> Records are stored in this browser's
+        local storage on this device. Avoid entering identifiable medical
+        information on shared devices.
+    </p>
+
+</main>
+
+<footer>
+    DiaBuddy © 2026 | Built with HTML, CSS and JavaScript
+</footer>
+<script>
+// DiaBuddy AI Chat
+const aiChatForm = document.getElementById("aiChatForm");
+const aiQuestion = document.getElementById("aiQuestion");
+const chatMessages = document.getElementById("chatMessages");
+const aiSendButton = document.getElementById("aiSendButton");
+const aiStatus = document.getElementById("aiStatus");
+let conversationHistory = [];
+
+aiChatForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const question = aiQuestion.value.trim();
+
+    if (!question) {
+        return;
+    }
+
+    // Show the user's question safely
+    const userMessage = document.createElement("p");
+    userMessage.style.margin = "12px 0";
+    const userLabel = document.createElement("strong");
+    userLabel.textContent = "You: ";
+    userMessage.append(userLabel, document.createTextNode(question));
+    chatMessages.appendChild(userMessage);
+
+    aiQuestion.value = "";
+    aiSendButton.disabled = true;
+    aiSendButton.textContent = "Thinking...";
+    aiStatus.textContent = "DiaBuddy is preparing a response...";
+
+    const loadingMessage = document.createElement("p");
+    loadingMessage.textContent = "DiaBuddy is thinking...";
+    loadingMessage.style.margin = "12px 0";
+    chatMessages.appendChild(loadingMessage);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    try {
+        const response = await fetch("/api/ask", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+        message: question,
+        history: conversationHistory
+    })
+});
+conversationHistory.push({
+    role: "user",
+    content: question
+});
+
+        const data = await response.json();
+        loadingMessage.remove();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Unable to get an AI response.");
+        }
+
+    conversationHistory.push({
+    role: "assistant",
+    content: data.answer
+});
+
+        const aiMessage = document.createElement("p");
+        aiMessage.style.margin = "12px 0";
+        aiMessage.style.whiteSpace = "pre-wrap";
+
+        const aiLabel = document.createElement("strong");
+        aiLabel.textContent = "DiaBuddy: ";
+
+        aiMessage.append(
+            aiLabel,
+            document.createTextNode(data.answer)
+        );
+
+        chatMessages.appendChild(aiMessage);
+        aiStatus.textContent = "Response received from your local AI.";
+
+    } catch (error) {
+        loadingMessage.remove();
+
+        const errorMessage = document.createElement("p");
+        errorMessage.style.margin = "12px 0";
+        errorMessage.style.color = "#b42318";
+        errorMessage.textContent =
+            "Sorry, buddy! " + error.message +
+            " Please check that Flask and Ollama are running.";
+
+        chatMessages.appendChild(errorMessage);
+        aiStatus.textContent = "Could not get an AI response.";
+
+    } finally {
+        aiSendButton.disabled = false;
+        aiSendButton.textContent = "Ask DiaBuddy";
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        aiQuestion.focus();
+    }
+});
+</script>
+
+<script>
+    const form = document.getElementById("glucoseForm");
+    const glucoseInput = document.getElementById("glucose");
+    const timingInput = document.getElementById("timing");
+    const dateInput = document.getElementById("date");
+
+    let readings = [];
+
+    try {
+        const saved = localStorage.getItem("diabuddy_readings");
+        const parsed = saved ? JSON.parse(saved) : [];
+
+        if (Array.isArray(parsed)) {
+            readings = parsed.filter(item =>
+                item &&
+                typeof item.value === "number" &&
+                Number.isFinite(item.value) &&
+                typeof item.timing === "string" &&
+                typeof item.date === "string" &&
+                Number.isFinite(Date.parse(item.date))
+            );
+        }
+    } catch (error) {
+        readings = [];
+    }
+
+    function setCurrentDate() {
+        const now = new Date();
+        const localDate = new Date(
+            now.getTime() - now.getTimezoneOffset() * 60000
+        );
+
+        dateInput.value = localDate.toISOString().slice(0, 16);
+    }
+
+    function saveReadings() {
+        try {
+            localStorage.setItem(
+                "diabuddy_readings",
+                JSON.stringify(readings)
+            );
+        } catch (error) {
+            alert("Unable to save records in this browser.");
+        }
+    }
+
+    function renderDashboard() {
+        const sorted = [...readings].sort(
+            (a, b) => Date.parse(b.date) - Date.parse(a.date)
+        );
+
+        document.getElementById("latest").textContent =
+            sorted.length ? sorted[0].value : "--";
+
+        document.getElementById("total").textContent =
+            readings.length;
+
+        const todayString = new Date().toDateString();
+
+        const todaysReadings = readings.filter(item =>
+            new Date(item.date).toDateString() === todayString
+        );
+
+        document.getElementById("today").textContent =
+            todaysReadings.length;
+
+        const container = document.getElementById("historyContainer");
+
+        if (sorted.length === 0) {
+            container.innerHTML =
+                '<p class="empty">No readings recorded yet. Add your first reading above.</p>';
+            return;
+        }
+
+        const table = document.createElement("table");
+        table.className = "history";
+
+        const thead = document.createElement("thead");
+        const headerRow = document.createElement("tr");
+
+        ["Glucose (mg/dL)", "Timing", "Date and time"].forEach(text => {
+            const th = document.createElement("th");
+            th.textContent = text;
+            headerRow.appendChild(th);
+        });
+
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        const tbody = document.createElement("tbody");
+
+        sorted.forEach(item => {
+            const row = document.createElement("tr");
+
+            const valueCell = document.createElement("td");
+            valueCell.textContent = item.value;
+
+            const timingCell = document.createElement("td");
+            timingCell.textContent = item.timing;
+
+            const dateCell = document.createElement("td");
+            dateCell.textContent = new Date(item.date).toLocaleString();
+
+            row.append(valueCell, timingCell, dateCell);
+            tbody.appendChild(row);
+        });
+
+        table.appendChild(tbody);
+        container.replaceChildren(table);
+    }
+
+    form.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const value = Number(glucoseInput.value);
+        const date = dateInput.value;
+
+        if (!Number.isFinite(value) || value <= 0 || value > 2000) {
+            alert("Please enter a valid measured glucose reading.");
+            return;
+        }
+
+        if (!date || !Number.isFinite(Date.parse(date))) {
+            alert("Please select a valid date and time.");
+            return;
+        }
+
+        readings.push({
+            value: value,
+            timing: timingInput.value,
+            date: new Date(date).toISOString()
+        });
+
+        saveReadings();
+        renderDashboard();
+
+        glucoseInput.value = "";
+        setCurrentDate();
+
+        alert("Your glucose reading has been saved!");
+    });
+
+    document.getElementById("clearHistory").addEventListener(
+        "click",
+        function() {
+            if (!confirm("Delete all saved glucose readings?")) {
+                return;
+            }
+
+            readings = [];
+            saveReadings();
+            renderDashboard();
+        }
+    );
+
+    setCurrentDate();
+    renderDashboard();
+</script>
+
+</body>
+</html>
